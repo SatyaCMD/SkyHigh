@@ -1,57 +1,76 @@
 from django.core.management.base import BaseCommand
 from datetime import datetime, timedelta
 import random
+import uuid
+
 from flights.models import Flight
 from flights.repositories import FlightRepository
 
-import uuid
-
 class Command(BaseCommand):
-    help = 'Seeds the database with simulated flight data'
+    help = "Seed the database with simulated flight data (Render-safe)"
 
     def handle(self, *args, **options):
         repo = FlightRepository()
-        repo.delete_all() 
 
-        airlines = ['AA', 'DL', 'UA', 'BA', 'LH', 'EK', 'SQ', 'QF', 'NH', 'AF', 'TK', 'QR', 'CX', 'VS']
-        airports = ['JFK', 'LHR', 'LAX', 'DXB', 'SIN', 'HND', 'CDG', 'AMS', 'SYD', 'FRA', 'IST', 'ORD', 'ATL', 'PEK', 'CAN', 'SFO', 'MIA', 'YYZ', 'BOM', 'DEL']
-        
+        if repo.count() > 0:
+            self.stdout.write(
+                self.style.WARNING("Flights already exist. Skipping seeding.")
+            )
+            return
+
+        airlines = [
+            'AA', 'DL', 'UA', 'BA', 'LH', 'EK', 'SQ',
+            'QF', 'NH', 'AF', 'TK', 'QR', 'CX', 'VS'
+        ]
+
+        airports = [
+            'JFK', 'LHR', 'LAX', 'DXB', 'SIN', 'HND',
+            'CDG', 'AMS', 'SYD', 'FRA', 'IST', 'ORD',
+            'ATL', 'PEK', 'CAN', 'SFO', 'MIA', 'YYZ',
+            'BOM', 'DEL'
+        ]
+
         flights = []
-        base_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        
-        self.stdout.write("Generating flights... this may take a moment.")
+        batch_size = 2000
 
-        for origin in airports:
-            for destination in airports:
-                if origin == destination:
-                    continue
-                
-                for day_offset in range(-2, 46):
-                    current_date = base_date + timedelta(days=day_offset)
-                    num_flights_today = random.randint(12, 15)
-                    hours = sorted([random.randint(0, 23) for _ in range(num_flights_today)])
-                    
+        base_date = datetime.now().replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+        self.stdout.write("🚀 Seeding flights (safe mode)...")
+
+        for day_offset in range(0, 14):
+            current_date = base_date + timedelta(days=day_offset)
+
+            for origin in airports:
+                for destination in airports:
+                    if origin == destination:
+                        continue
+
+                    num_flights_today = random.randint(4, 6)
+                    hours = random.sample(range(0, 23), num_flights_today)
+
                     for hour in hours:
                         minute = random.randint(0, 59)
                         departure = current_date.replace(hour=hour, minute=minute)
-                        route_hash = hash(origin + destination)
-                        base_duration_hours = (route_hash % 12) + 2 
-                        duration_variance = random.randint(-30, 30) 
-                        
-                        duration_minutes = (base_duration_hours * 60) + duration_variance
+
+                        route_hash = abs(sum(ord(c) for c in origin + destination))
+                        base_duration_hours = (route_hash % 10) + 2
+                        duration_minutes = (base_duration_hours * 60) + random.randint(-20, 30)
+
                         arrival = departure + timedelta(minutes=duration_minutes)
-                        
+
                         airline = random.choice(airlines)
-                        
-                        base_cost = 100 + (base_duration_hours * 50) 
-                        price_variance = random.randint(-50, 200)
-                        price = base_cost + price_variance
-                        
-                        total_seats = random.choice([180, 200, 250, 300])
+                        base_price = 100 + (base_duration_hours * 50)
+                        price = base_price + random.randint(-30, 150)
+
+                        total_seats = random.choice([180, 200, 220])
+                        available_seats = random.randint(20, total_seats)
+
                         seat_map = []
                         seats_per_row = 6
-                        num_rows = total_seats // seats_per_row
-                        for _ in range(num_rows):
+                        rows = total_seats 
+
+                        for _ in range(rows):
                             row = "A" * seats_per_row
                             row = row[:3] + "X" + row[3:]
                             seat_map.append(row)
@@ -66,17 +85,21 @@ class Command(BaseCommand):
                             arrival_time=arrival,
                             base_price=float(price),
                             total_seats=total_seats,
-                            available_seats=random.randint(10, 180),
-                            seat_map=seat_map
+                            available_seats=available_seats,
+                            seat_map=seat_map,
                         )
+
                         flights.append(flight)
-                        
-                        if len(flights) >= 5000:
+                        if len(flights) >= batch_size:
                             repo.insert_many(flights)
                             flights = []
-                            self.stdout.write(f"Inserted batch... current date: {current_date.date()}")
+                            self.stdout.write(
+                                f"Inserted batch for {current_date.date()}"
+                            )
 
         if flights:
             repo.insert_many(flights)
-        
-        self.stdout.write(self.style.SUCCESS(f'Successfully seeded database. All routes covered.'))
+
+        self.stdout.write(
+            self.style.SUCCESS("Flight seeding completed successfully!")
+        )
