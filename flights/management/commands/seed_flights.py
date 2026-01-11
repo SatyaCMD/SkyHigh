@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
         airports = [a["code"] for a in airports_data]
 
-        airlines = ["AI", "UK", "6E", "SG", "G8", "IX"]
+        airlines = ["Indigo", "Air Asia", "Air India", "Qatar Airways", "Singapore Airlines", "Spice Jet"]
 
         flights = []
         batch_size = 1000
