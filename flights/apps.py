@@ -35,7 +35,7 @@ class FlightsConfig(AppConfig):
                 Airport(code="TRZ", city="Trichy"),
             ])
 
-            print("✅ Airports seeded successfully")
+            print("Airports seeded successfully")
 
         except Exception as e:
-            print("❌ Airport seeding skipped:", e)
+            print("Airport seeding skipped:", e)

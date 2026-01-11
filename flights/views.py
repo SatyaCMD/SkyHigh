@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .repositories import FlightRepository
 from .models import Flight
+from flights.utils import load_airports
 
 class FlightListView(APIView):
     def get(self, request):
@@ -29,9 +30,8 @@ class FlightSearchView(APIView):
 
 class AirportListView(APIView):
     def get(self, request):
-        repo = FlightRepository()
-        airports = repo.get_all_airports()
-        return Response(airports)
+        airports = load_airports()
+        return Response([a.to_dict() for a in airports])
 
 class FlightDetailView(APIView):
     def get(self, request, flight_id):
