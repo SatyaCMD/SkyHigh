@@ -113,21 +113,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchAirports() {
-        try {
-            const response = await fetch('/api/flights/airports/');
-            const airports = await response.json();
+    try {
+        const response = await fetch('/api/flights/airports/');
+        const airports = await response.json();
+        console.log("AIRPORTS:", airports); 
 
-            if (airportsList) {
-                airports.forEach(code => {
-                    const option = document.createElement('option');
-                    option.value = code;
-                    airportsList.appendChild(option);
-                });
-            }
-        } catch (error) {
-            console.error('Failed to fetch airports:', error);
+        if (airportsList) {
+            airportsList.innerHTML = ''; 
+
+            airports.forEach(airport => {
+                const option = document.createElement('option');
+                option.value = airport.code;
+                option.textContent = `${airport.city} (${airport.code})`;
+                airportsList.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Failed to fetch airports:', error);
         }
     }
+
 
     function createFlightCard(flight, index) {
         const div = document.createElement('div');
