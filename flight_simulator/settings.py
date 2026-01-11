@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(qs9e347_y$eyq&msee9#ph2_a!&lv(+w^a)$gab5q8an(i3%2'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+DEBUG = False  
+ALLOWED_HOSTS = ['skyhigh-0rju.onrender.com']
 
 
 INSTALLED_APPS = [
@@ -28,8 +28,10 @@ INSTALLED_APPS = [
     'flights',
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -37,6 +39,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'flight_simulator.urls'
 
@@ -88,5 +91,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
