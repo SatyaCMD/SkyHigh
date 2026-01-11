@@ -1,0 +1,22 @@
+[
+  {"code":"BOM","name":"Chhatrapati Shivaji","city":"Mumbai","country":"India"},
+  {"code":"DEL","name":"Indira Gandhi","city":"Delhi","country":"India"},
+  {"code":"BLR","name":"Kempegowda","city":"Bangalore","country":"India"},
+  {"code":"HYD","name":"Rajiv Gandhi","city":"Hyderabad","country":"India"},
+  {"code":"MAA","name":"Chennai International","city":"Chennai","country":"India"},
+  {"code":"CCU","name":"Netaji Subhash","city":"Kolkata","country":"India"},
+  {"code":"PNQ","name":"Pune Airport","city":"Pune","country":"India"},
+  {"code":"AMD","name":"Sardar Vallabhbhai Patel","city":"Ahmedabad","country":"India"},
+  {"code":"GOI","name":"Dabolim","city":"Goa","country":"India"},
+  {"code":"COK","name":"Cochin International","city":"Kochi","country":"India"},
+  {"code":"TRV","name":"Trivandrum International","city":"Trivandrum","country":"India"},
+  {"code":"IXC","name":"Chandigarh Airport","city":"Chandigarh","country":"India"},
+  {"code":"JAI","name":"Jaipur International","city":"Jaipur","country":"India"},
+  {"code":"LKO","name":"Chaudhary Charan Singh","city":"Lucknow","country":"India"},
+  {"code":"PAT","name":"Jay Prakash Narayan","city":"Patna","country":"India"},
+  {"code":"NAG","name":"Dr. Babasaheb Ambedkar","city":"Nagpur","country":"India"},
+  {"code":"IDR","name":"Devi Ahilya Bai Holkar","city":"Indore","country":"India"},
+  {"code":"VNS","name":"Lal Bahadur Shastri","city":"Varanasi","country":"India"},
+  {"code":"BBI","name":"Biju Patnaik","city":"Bhubaneswar","country":"India"},
+  {"code":"VTZ","name":"Visakhapatnam Airport","city":"Vizag","country":"India"}
+]
