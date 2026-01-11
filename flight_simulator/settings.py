@@ -15,16 +15,16 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(qs9e347_y$eyq&msee9#ph2_a!&lv(+w^a)$gab5q8an(i3%2'
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = True
 
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
-    ".onrender.com"
+    "127.0.0.1,localhost,.onrender.com"
 ).split(",")
 
 CSRF_TRUSTED_ORIGINS = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
-    "https://*.onrender.com"
+    "http://127.0.0.1:8000,http://localhost:8000,https://*.onrender.com"
 ).split(",")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
