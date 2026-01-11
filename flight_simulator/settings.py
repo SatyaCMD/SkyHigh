@@ -14,7 +14,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(qs9e347_y$eyq&msee9#ph2_a!&lv(+w^a)$gab5q8an(i3%2'
 DEBUG = False  
-ALLOWED_HOSTS = ['skyhigh-0rju.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
