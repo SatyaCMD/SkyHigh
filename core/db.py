@@ -1,4 +1,5 @@
 import os
+import certifi
 from pymongo import MongoClient
 
 class MongoDB:
@@ -8,11 +9,21 @@ class MongoDB:
     @classmethod
     def get_client(cls):
         if cls._client is None:
-            mongo_uri = os.getenv(
-                "MONGO_URI",
-                "mongodb://localhost:27017/flight_simulator"
+            mongo_uri = os.getenv("MONGO_URI")
+
+            if not mongo_uri:
+                raise RuntimeError("MONGO_URI environment variable not set")
+
+            cls._client = MongoClient(
+                mongo_uri,
+                tls=True,
+                tlsCAFile=certifi.where(),
+                serverSelectionTimeoutMS=30000,
             )
-            cls._client = MongoClient(mongo_uri)
+
+            cls._client.admin.command("ping")
+            print("MongoDB connected successfully")
+
         return cls._client
 
     @classmethod
@@ -23,7 +34,6 @@ class MongoDB:
             cls._db = client[db_name]
 
         return cls._db
-
 
 def get_flights_collection():
     return MongoDB.get_db()["flights"]
