@@ -4,6 +4,8 @@ from rest_framework import status
 from .repositories import FlightRepository
 from .models import Flight
 from flights.utils import load_airports
+from flights.repositories import FlightRepository
+from flights.management.commands.seed_flights import Command
 
 class FlightListView(APIView):
     def get(self, request):
@@ -18,15 +20,22 @@ class FlightSearchView(APIView):
         date = request.query_params.get('date')
         sort_by = request.query_params.get('sort_by')
 
-        if not origin or not destination:
+        if not origin or not destination or not date:
             return Response(
-                {"error": "Origin and destination are required parameters."},
+                {"error": "Origin, destination, and date are required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         repo = FlightRepository()
+
+        if repo.count() == 0:
+            print("No flights found. Auto-seeding flights now...")
+            Command().handle()
+
         flights = repo.search(origin, destination, date, sort_by)
+        print(f"DEBUG: Found {len(flights)} flights")
         return Response([f.to_dict() for f in flights])
+
 
 class AirportListView(APIView):
     def get(self, request):
