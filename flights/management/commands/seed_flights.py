@@ -4,18 +4,21 @@ import random, uuid, json
 from pathlib import Path
 
 from flights.models import Flight
+from flights.repositories import FlightRepository
+
 
 class Command(BaseCommand):
     help = "Seed MongoDB with flights (Render-safe)"
 
     def handle(self, *args, **options):
-        Flight.objects.delete() 
+        repo = FlightRepository()
+        repo.delete_all()
 
         airports_file = Path("flights/data/airports.json")
         airports = json.loads(airports_file.read_text())
         codes = [a["code"] for a in airports]
 
-        airlines = ["Air India", "Indigo", "Air Asia", "Vistara", "Qatar Arilines"]
+        airlines = ["Air India", "Indigo", "Air Asia", "Vistara", "Qatar Airlines"]
         base_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
 
         flights = []
@@ -42,11 +45,12 @@ class Command(BaseCommand):
                                 departure_time=dep,
                                 arrival_time=arr,
                                 base_price=random.randint(2500, 9000),
+                                current_price=random.randint(2500, 9000),
                                 total_seats=180,
                                 available_seats=random.randint(10, 180),
                                 seat_map=["AAAXAA"] * 30,
                             )
                         )
 
-        Flight.objects.insert(flights)
-        self.stdout.write(self.style.SUCCESS(f"✅ Seeded {len(flights)} flights"))
+        repo.insert_many(flights)
+        self.stdout.write(self.style.SUCCESS(f" Seeded {len(flights)} flights"))
