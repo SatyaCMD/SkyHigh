@@ -5,8 +5,14 @@ from core.db import get_flights_collection
 from .models import Flight, Booking
 
 class FlightRepository:
+    def count(self) -> int:
+        return self.collection.count_documents({})
+
     def __init__(self):
         self.collection = get_flights_collection()
+
+    def count(self) -> int:
+        return self.collection.count_documents({})
 
     def insert_many(self, flights: List[Flight]):
         data = [f.to_dict() for f in flights]

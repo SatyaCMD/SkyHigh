@@ -29,8 +29,11 @@ class FlightSearchView(APIView):
         repo = FlightRepository()
 
         if repo.count() == 0:
-            print("No flights found. Auto-seeding flights now...")
-            Command().handle()
+            return Response(
+                {"message": "No flights available"},
+                status=200
+            )
+
 
         flights = repo.search(origin, destination, date, sort_by)
         print(f"DEBUG: Found {len(flights)} flights")
