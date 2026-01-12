@@ -1,41 +1,26 @@
 from django.apps import AppConfig
+import threading
 
 class FlightsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'flights'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "flights"
 
     def ready(self):
+        threading.Thread(target=self.auto_seed_flights, daemon=True).start()
+
+    def auto_seed_flights(self):
         try:
-            from flights.models import Airport
-            if Airport.objects().count() > 0:
-                return  
+            from flights.repositories import FlightRepository
+            from flights.management.commands.seed_flights import Command
 
-            Airport.objects.insert([
-                Airport(code="BOM", city="Mumbai"),
-                Airport(code="DEL", city="Delhi"),
-                Airport(code="BLR", city="Bangalore"),
-                Airport(code="HYD", city="Hyderabad"),
-                Airport(code="MAA", city="Chennai"),
-                Airport(code="CCU", city="Kolkata"),
-                Airport(code="PNQ", city="Pune"),
-                Airport(code="AMD", city="Ahmedabad"),
-                Airport(code="GOI", city="Goa"),
-                Airport(code="COK", city="Kochi"),
-                Airport(code="TRV", city="Trivandrum"),
-                Airport(code="IXC", city="Chandigarh"),
-                Airport(code="JAI", city="Jaipur"),
-                Airport(code="LKO", city="Lucknow"),
-                Airport(code="PAT", city="Patna"),
-                Airport(code="RPR", city="Raipur"),
-                Airport(code="BBI", city="Bhubaneswar"),
-                Airport(code="VNS", city="Varanasi"),
-                Airport(code="IDR", city="Indore"),
-                Airport(code="NAG", city="Nagpur"),
-                Airport(code="VTZ", city="Vizag"),
-                Airport(code="TRZ", city="Trichy"),
-            ])
+            repo = FlightRepository()
 
-            print("Airports seeded successfully")
+            if repo.count() > 0:
+                print("Flights already exist, skipping auto-seed")
+                return
+
+            print("Auto-seeding flights (Render Free)...")
+            Command().handle()
 
         except Exception as e:
-            print("Airport seeding skipped:", e)
+            print("Flight auto-seeding failed:", e)
