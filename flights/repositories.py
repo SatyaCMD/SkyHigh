@@ -5,8 +5,6 @@ from core.db import get_flights_collection
 from .models import Flight, Booking
 
 class FlightRepository:
-    def count(self) -> int:
-        return self.collection.count_documents({})
 
     def __init__(self):
         self.collection = get_flights_collection()
@@ -29,16 +27,16 @@ class FlightRepository:
         if destination:
             query['destination'] = destination.upper()
         
-        if date:
-            try:
-                start_date = datetime.strptime(date, "%Y-%m-%d")
-                end_date = start_date.replace(hour=23, minute=59, second=59)
-                query['departure_time'] = {
-                    '$gte': start_date,
-                    '$lte': end_date
-                }
-            except ValueError:
-                pass
+        # if date:
+        #     try:
+        #         start_date = datetime.strptime(date, "%Y-%m-%d")
+        #         end_date = start_date.replace(hour=23, minute=59, second=59)
+        #         query['departure_time'] = {
+        #             '$gte': start_date,
+        #             '$lte': end_date
+        #         }
+        #     except ValueError:
+        #         pass
 
         print(f"DEBUG: Search Query: {query}")
         
